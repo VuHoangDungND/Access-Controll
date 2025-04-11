@@ -53,7 +53,6 @@ const UserList: React.FC = () => {
     setLoading(true);
     try {
       const data = await userService.getUsers();
-      console.log(data)
       setUsers(data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -110,7 +109,6 @@ const UserList: React.FC = () => {
 
   // Form submission handlers
   const handleFormSubmit = (id: string | null, userData: any) => {
-    console.log(id)
     if (id) {
       handleUpdateUser(id, userData);
     } else {
@@ -165,7 +163,6 @@ const UserList: React.FC = () => {
   // Pagination logic
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
   const paginatedUsers = users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  console.log(users);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {

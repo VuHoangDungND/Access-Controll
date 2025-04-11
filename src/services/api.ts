@@ -179,7 +179,6 @@ export const userService = {
   },
   
   updateUser: async (id: string, userData: Partial<User>): Promise<void> => {
-    console.log(id);
     const url_update_user = `${BE_HOST}/api/User/${id}`;
 
     const param = {
