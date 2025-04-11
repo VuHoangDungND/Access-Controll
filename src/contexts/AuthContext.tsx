@@ -17,9 +17,9 @@ type AuthAction =
   | { type: 'SET_USER'; payload: User };
 
 const initialState: AuthState = {
-  user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null,
-  token: localStorage.getItem('token'),
-  isAuthenticated: !!localStorage.getItem('token'),
+  user: sessionStorage.getItem('user') ? JSON.parse(sessionStorage.getItem('user')!) : null,
+  token: sessionStorage.getItem('token'),
+  isAuthenticated: !!sessionStorage.getItem('token'),
   isLoading: false,
   error: null,
 };
@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Kiểm tra token và lấy thông tin user khi component mount
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       if (token && !state.user) {
         try {
           const user = await authService.getUserInfo(token);

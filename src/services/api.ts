@@ -55,7 +55,7 @@ export const authService = {
       };
       
       // Lưu thông tin user vào localStorage
-      localStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("user", JSON.stringify(user));
       
       return {
         user,
