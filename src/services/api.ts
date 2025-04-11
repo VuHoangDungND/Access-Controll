@@ -179,7 +179,8 @@ export const userService = {
   },
   
   updateUser: async (id: string, userData: Partial<User>): Promise<void> => {
-    const url_update_user = `${BE_HOST}/api/User/userId?userId=${id}`;
+    console.log(id);
+    const url_update_user = `${BE_HOST}/api/User/${id}`;
 
     const param = {
       id: id,
@@ -191,7 +192,7 @@ export const userService = {
     }
 
     try {
-      await axios.put(url_update_user, param, {
+      await axios.post(url_update_user, param, {
         headers: {
           "Content-Type": "application/json",
         }
@@ -203,7 +204,7 @@ export const userService = {
   },
   
   deleteUser: async (id: string): Promise<void> => {
-    const url = `${BE_HOST}/api/User/userId?userId=${id}`;
+    const url = `${BE_HOST}/api/User/${id}`;
 
     try {
       await axios.delete(url, {

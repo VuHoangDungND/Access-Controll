@@ -46,6 +46,7 @@ const UserForm: React.FC<UserFormProps> = ({
   const fingerPrintInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    console.log(user);
     if (user) {
       setFormData({
         username: user.username || '',
