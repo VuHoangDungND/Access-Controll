@@ -439,13 +439,16 @@ export const permissionService = {
   },
   
   createPermission: async (userIds: string[], deviceIds: string[], startTime: string, endTime: string): Promise<void> => {
+    const token = getToken();
     const url = `${BE_HOST}/api/Permission`;
 
     const param = {
       userIds: userIds,
       deviceIds: deviceIds,
       time_Start: startTime,
-      time_End: endTime
+      time_End: endTime,
+      token: token
+      
     }
 
     try {
