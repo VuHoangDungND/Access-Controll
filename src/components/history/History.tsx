@@ -35,6 +35,7 @@ const History: React.FC = () => {
   const [endTime, setEndTime] = useState<Date | null>(null);
   const [loading, setLoading] = useState(true);
   const [filteredHistory, setFilteredHistory] = useState<HistoryEntry[]>([]);
+  const [allHistory, setAllHistory] = useState<HistoryEntry[]>([]);
 
   // Pagination
   const [page, setPage] = useState(0);
@@ -44,14 +45,19 @@ const History: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [usersData, devicesData, historiesData] = await Promise.all([
+        const [usersData, devicesData] = await Promise.all([
           userService.getUsers(),
-          deviceService.getDevices(),
-          historyService.getHistories()
+          deviceService.getDevices()
         ]);
         setUsers(usersData);
         setDevices(devicesData);
-        setFilteredHistory(historiesData);
+
+      const deviceIds = devicesData.map(device => device.id);
+
+      const historiesData = await historyService.getHistories(deviceIds);
+
+      setAllHistory(historiesData);
+      setFilteredHistory(historiesData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -62,15 +68,26 @@ const History: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleFilter = async () => {
-    const data: HistoryEntry[] = await historyService.getHistorieByListID({
-      selectedUsers,
-      selectedDevices,
-      startTime,
-      endTime
-    })
-
-    setFilteredHistory(data);
+  const handleFilter = () => {
+    let filtered = allHistory;
+  
+    if (selectedUsers.length > 0) {
+      filtered = filtered.filter(entry => selectedUsers.includes(entry.userId));
+    }
+  
+    if (selectedDevices.length > 0) {
+      filtered = filtered.filter(entry => selectedDevices.includes(entry.deviceId));
+    }
+  
+    if (startTime) {
+      filtered = filtered.filter(entry => new Date(entry.timestamp) >= startTime);
+    }
+  
+    if (endTime) {
+      filtered = filtered.filter(entry => new Date(entry.timestamp) <= endTime);
+    }
+  
+    setFilteredHistory(filtered);
     setPage(0);
   };
 

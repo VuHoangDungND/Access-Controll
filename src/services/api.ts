@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { User, Device, Schedule, Permission, LoginCredentials, HistoryEntry } from '../types';
-import { users, schedules, historyEntries } from '../mocks/data';
+import { users, schedules } from '../mocks/data';
 import { v4 as uuidv4 } from 'uuid';
 
 // Delay function to simulate API calls
@@ -503,111 +503,39 @@ export const permissionService = {
 }; 
 
 export const historyService = {
-  getHistories: async(): Promise<HistoryEntry[]> => {
-    const url_getHistories = `${BE_HOST}/api/History/All`;
+  getHistories: async(deviceIds: string[]): Promise<HistoryEntry[]> => {
 
-    try {
-      const res = await axios.get(url_getHistories, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      // Giả sử trả về mảng [{ histId, userId }]
-      console.log(res.data);
-      return res.data;
-    } catch (error) {
-      console.warn(`Không lấy được lịch sử cho user`, error);
-      return [];
-    }
-
-  },
-  getHistorieByListID: async (data: {
-    selectedUsers: string[],
-    selectedDevices: string[],
-    startTime: Date | null,
-    endTime: Date | null,
-  }): Promise<HistoryEntry[]> => {
     const token = getToken();
+    const allHistoriesNested = await Promise.all(
+      deviceIds.map(async (deviceId: any) => {
 
-    const { selectedUsers, selectedDevices, startTime, endTime } = data;
-    if (!startTime || !endTime) {
-      throw new Error("startTime và endTime là bắt buộc!");
-    }
-    const startTs = startTime.getTime();
-    const endTs = endTime.getTime();
-
-    // Step 1: Gọi API user-history → [{ histId, userId }]
-    const userHistories = await Promise.all(
-      selectedUsers.map(async (userId) => {
-        const url = `${BE_HOST}/api/History/All`;
+        const telemetryUrl = `${THINGSBOARD_HOST}/api/plugins/telemetry/DEVICE/${deviceId}/values/timeseries?keys=entry_exit_history`
 
         try {
-          const res = await axios.get(url, {
+          const telemetryRes = await axios.get(telemetryUrl, {
             headers: {
+              "Content-Type": "application/json",
               "X-Authorization": `Bearer ${token}`,
-            },
+            }
           });
 
-          // Giả sử trả về mảng [{ histId, userId }]
-          console.log(res.data);
-          return res.data;
+          const data = JSON.parse(telemetryRes.data.entry_exit_history[0]?.value);
+          
+          return {
+            id: data.id,
+            userId: data.user_id,
+            deviceId: deviceId,
+            timestamp: data.timestamp,
+          };
         } catch (error) {
-          console.warn(`Không lấy được lịch sử cho user ${userId}`, error);
+          console.warn(`Không lấy được lịch sử cho user`, error);
           return [];
         }
       })
-    );
+    )
+    const allHistories: HistoryEntry[] = allHistoriesNested.flat();
 
-    // Flatten mảng 2D thành 1D
-    const flattenedUserHistories = userHistories.flat();
-
-    // Step 2: Gọi API device-history → [{ histId, deviceId, type, status }]
-    const deviceHistories = await Promise.all(
-      selectedDevices.map(async (deviceId) => {
-        const url = `${THINGSBOARD_HOST}/api/plugins/telemetry/DEVICE/${deviceId}/values/timeseries`;
-
-        try {
-          const res = await axios.get(url, {
-            headers: {
-              "X-Authorization": `Bearer ${token}`,
-            },
-            params: {
-              keys: "type,status",
-              startTs,
-              endTs,
-            },
-          });
-
-          // Giả sử trả về mảng [{ histId, deviceId, type, status }]
-          return res.data;
-        } catch (error) {
-          console.warn(`Không lấy được lịch sử cho device ${deviceId}`, error);
-          return [];
-        }
-      })
-    );
-
-    const flattenedDeviceHistories = deviceHistories.flat();
-
-    // Step 3: Map theo histId
-    const result : HistoryEntry[] = [];
-
-    flattenedUserHistories.forEach(userHist => {
-      const matchedDevice = flattenedDeviceHistories.find(deviceHist => deviceHist.histId === userHist.histId);
-      if (matchedDevice) {
-        result.push({
-          id: userHist.histId,
-          userId: userHist.userId,
-          deviceId: matchedDevice.deviceId,
-          timestamp: matchedDevice.timestamp,
-          type: matchedDevice.type,
-          status: matchedDevice.status,
-        });
-      }
-    });
-
-    return result;
+    return allHistories;
   },
 };
 

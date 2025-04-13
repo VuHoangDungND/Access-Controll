@@ -60,6 +60,4 @@ export interface HistoryEntry {
   userId: string;
   deviceId: string;
   timestamp: string;
-  type: 'entry' | 'exit';
-  status: 'success' | 'failed';
 } 
