@@ -33,8 +33,8 @@ export interface Schedule {
 // Permission types
 export interface Permission {
   id: string;
-  userIds: string[];
-  deviceIds: string[];
+  userId: string;
+  deviceId: string;
   startTime: string;
   endTime: string;
   createdAt: string;

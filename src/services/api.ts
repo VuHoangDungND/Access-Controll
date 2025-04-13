@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { User, Device, Schedule, Permission, LoginCredentials, HistoryEntry } from '../types';
-import { users, schedules, permissions, historyEntries } from '../mocks/data';
+import { users, schedules, historyEntries } from '../mocks/data';
 import { v4 as uuidv4 } from 'uuid';
 
 // Delay function to simulate API calls
@@ -427,8 +427,8 @@ export const permissionService = {
 
       return response.data.map((permissionInfo: any) => ({
         id: permissionInfo.id,
-        userIds: permissionInfo.userId,
-        deviceIds: permissionInfo.deviceId,
+        userId: permissionInfo.userId,
+        deviceId: permissionInfo.deviceId,
         startTime: permissionInfo.time_Start,
         endTime: permissionInfo.time_End,
         createdAt: permissionInfo.createdAt

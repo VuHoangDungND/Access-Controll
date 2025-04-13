@@ -50,33 +50,6 @@ export const users: User[] = [
   },
 ];
 
-// Mock Permissions
-export const permissions: Permission[] = [
-  {
-    id: '1',
-    userIds: ['1', '2'],
-    deviceIds: ['1', '2'],
-    startTime: currentDate,
-    endTime: tomorrow,
-    createdAt: currentDate,
-  },
-  {
-    id: '2',
-    userIds: ['3'],
-    deviceIds: ['3'],
-    startTime: currentDate,
-    endTime: nextWeek,
-    createdAt: currentDate,
-  },
-  {
-    id: '3',
-    userIds: ['4', '5'],
-    deviceIds: ['4', '5'],
-    startTime: tomorrow,
-    endTime: nextWeek,
-    createdAt: currentDate,
-  },
-];
 
 // Mock Schedules
 export const schedules: Schedule[] = [

@@ -197,18 +197,14 @@ const SchedulePermission: React.FC = () => {
     }
   };
 
-  const getUserNames = (userIds: string[]) => {
-    return userIds.map(id => {
-      const user = users.find(u => u.id === id);
-      return user ? user.name : 'Unknown';
-    }).join(', ');
+  const getUserNames = (userId: string) => {
+    const user = users.find(u => u.id === userId);
+    return user ? user.name : 'Unknown';
   };
 
-  const getDeviceNames = (deviceIds: string[]) => {
-    return deviceIds.map(id => {
-      const device = devices.find(d => d.id === id);
-      return device ? device.name : 'Unknown';
-    }).join(', ');
+  const getDeviceNames = (deviceId: string) => {
+    const device = devices.find(d => d.id === deviceId);
+    return device ? device.name : 'Unknown';
   };
 
   // Format date time to display in table
@@ -466,8 +462,8 @@ const SchedulePermission: React.FC = () => {
                 {paginatedPermissions.map((permission, index) => (
                   <TableRow key={permission.id}>
                     <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                    <TableCell>{getUserNames(permission.userIds)}</TableCell>
-                    <TableCell>{getDeviceNames(permission.deviceIds)}</TableCell>
+                    <TableCell>{getUserNames(permission.userId)}</TableCell>
+                    <TableCell>{getDeviceNames(permission.deviceId)}</TableCell>
                     <TableCell>{permission.startTime ? formatDateTime(permission.startTime) : 'N/A'}</TableCell>
                     <TableCell>{permission.endTime ? formatDateTime(permission.endTime) : 'N/A'}</TableCell>
                     <TableCell>{formatDateTime(permission.createdAt)}</TableCell>
