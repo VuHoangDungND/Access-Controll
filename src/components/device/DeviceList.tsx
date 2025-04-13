@@ -279,7 +279,8 @@ const DeviceList: React.FC = () => {
                   <TableCell>Tên thiết bị</TableCell>
                   <TableCell>Loại</TableCell>
                   <TableCell>Vị trí</TableCell>
-                  <TableCell>Trạng thái</TableCell>
+                  <TableCell>Trạng thái hoạt động</TableCell>
+                  <TableCell>Trạng thái cửa</TableCell>
                   <TableCell>Camera</TableCell>
                   <TableCell>RFID</TableCell>
                   <TableCell>Vân tay</TableCell>
@@ -294,6 +295,7 @@ const DeviceList: React.FC = () => {
                     <TableCell>{device.type}</TableCell>
                     <TableCell>{device.location}</TableCell>
                     <TableCell>{device.status}</TableCell>
+                    <TableCell>{device.doorStatus}</TableCell>
                     <TableCell>{device.camStatus}</TableCell>
                     <TableCell>{device.rfidStatus}</TableCell>
                     <TableCell>{device.fingerPrintStatus}</TableCell>

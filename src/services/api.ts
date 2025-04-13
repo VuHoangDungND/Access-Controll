@@ -259,13 +259,15 @@ export const deviceService = {
               }
             });
             const data = JSON.parse(telemetryRes.data.status[0]?.value);
+            const ts = JSON.parse(telemetryRes.data.status[0]?.ts);
 
             return {
               id: device.id.id,
               name: device.name,
               type: device.type,
               location: device.label || "unknown",
-              status: !data || !data.door_status || data.door_status === 'close' ? 'close' : 'open',
+              status: Date.now() - ts > 300000 ? 'inactive' : 'active',
+              doorStatus: !data || !data.door_status || data.door_status === 'close' ? 'close' : 'open',
               camStatus: !data || !data.cam_status || data.cam_status === 'inactive'  ? 'inactive' : 'active',
               rfidStatus: !data || !data.rfid_status || data.rfid_status === 'inactive'  ? 'inactive' : 'active',
               fingerPrintStatus: !data || !data.finger_printer_status || data.finger_printer_status === 'inactive' ? 'inactive' : 'active'

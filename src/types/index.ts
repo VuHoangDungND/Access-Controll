@@ -16,6 +16,7 @@ export interface Device {
   type: string;
   location: string;
   status: string;
+  doorStatus: string;
   camStatus: string;
   rfidStatus: string;
   fingerPrintStatus: string;

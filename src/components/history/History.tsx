@@ -25,7 +25,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import viLocale from 'date-fns/locale/vi';
 import { User, Device, HistoryEntry } from '../../types';
 import { userService, deviceService, historyService } from '../../services/api';
-import { historyEntries } from '../../mocks/data';
 
 const History: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -225,8 +224,6 @@ const History: React.FC = () => {
                   <TableCell>Thời gian</TableCell>
                   <TableCell>Người dùng</TableCell>
                   <TableCell>Thiết bị</TableCell>
-                  <TableCell>Loại</TableCell>
-                  <TableCell>Trạng thái</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -237,12 +234,6 @@ const History: React.FC = () => {
                       <TableCell>{formatDateTime(entry.timestamp)}</TableCell>
                       <TableCell>{getUserName(entry.userId)}</TableCell>
                       <TableCell>{getDeviceName(entry.deviceId)}</TableCell>
-                      <TableCell>
-                        {entry.type === 'entry' ? 'Vào' : 'Ra'}
-                      </TableCell>
-                      <TableCell>
-                        {entry.status === 'success' ? 'Thành công' : 'Thất bại'}
-                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
