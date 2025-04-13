@@ -506,27 +506,39 @@ export const historyService = {
   getHistories: async(deviceIds: string[]): Promise<HistoryEntry[]> => {
 
     const token = getToken();
+    const startTs = 0;
+    const endTs = Date.now();
     const allHistoriesNested = await Promise.all(
       deviceIds.map(async (deviceId: any) => {
 
-        const telemetryUrl = `${THINGSBOARD_HOST}/api/plugins/telemetry/DEVICE/${deviceId}/values/timeseries?keys=entry_exit_history`
+        const telemetryUrl = `${THINGSBOARD_HOST}/api/plugins/telemetry/DEVICE/${deviceId}/values/timeseries`
 
         try {
           const telemetryRes = await axios.get(telemetryUrl, {
             headers: {
               "Content-Type": "application/json",
               "X-Authorization": `Bearer ${token}`,
-            }
+            },
+            params: {
+              keys: "entry_exit_history",
+              startTs,
+              endTs,
+            },
           });
 
-          const data = JSON.parse(telemetryRes.data.entry_exit_history[0]?.value);
-          
-          return {
-            id: data.id,
-            userId: data.user_id,
-            deviceId: deviceId,
-            timestamp: data.timestamp,
-          };
+          const entries = telemetryRes.data.entry_exit_history || [];
+
+          const parsedEntries: HistoryEntry[] = entries.map((entry: any) => {
+            const data = JSON.parse(entry.value);
+            return {
+              id: data.id,
+              userId: data.user_id,
+              deviceId: deviceId,
+              timestamp: data.timestamp,
+            };
+          });
+
+          return parsedEntries;
         } catch (error) {
           console.warn(`Không lấy được lịch sử cho user`, error);
           return [];
